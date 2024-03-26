@@ -9,7 +9,7 @@
 
 
     .new_footer_top {
-        padding: 120px 0px 270px;
+        padding: 20px 70px 250px;
         position: relative;
         overflow-x: hidden;
     }
@@ -242,6 +242,21 @@
         }
     }
 
+    .em {
+        width: 70%;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        outline: none;
+        padding: 8px;
+        box-sizing: border-box;
+        transition: .3s;
+    }
+
+    .em:focus {
+        border-color: rgb(94, 44, 237);
+        box-shadow: 0 0 8px 0 rgb(94, 44, 237);
+    }
+
     /*************footer End*****************/
 </style>
 <link rel="stylesheet" href="./css/toasty.css">
@@ -255,8 +270,8 @@
                         <div class="f_widget company_widget wow fadeInLeft" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInLeft;">
                             <h3 class="f-title f_600 t_color f_size_18">Get in Touch</h3>
                             <p>if you have any query then plase email us to reach!</p>
-                            <form action="#" class="f_subscribe_two mailchimp" method="post" novalidate="false" _lpchecked="1">
-                                <input type="text" class="form-control" placeholder="Email">
+                            <form action="#" class="f_subscribe_two mailchimp" id="footerEmail" method="post" novalidate="false" _lpchecked="1">
+                                <input type="text" class="em" placeholder="Email">
                                 <button class="btn btn_get btn_get_two" type="submit">Subscribe</button>
                                 <p class="mchimp-errmessage" style="display: none;"></p>
                                 <p class="mchimp-sucmessage" style="display: none;"></p>
