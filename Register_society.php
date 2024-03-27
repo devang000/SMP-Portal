@@ -44,6 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             if (mysqli_stmt_execute($stmt)) {
+                // Set session variables for society details
+                $_SESSION["societyName"] = $societyName;
+                $_SESSION["societyAddress"] = $societyAddress;
+                $_SESSION["city"] = $city;
+                $_SESSION["pincode"] = $pincode;
+                $_SESSION["logoPath"] = $logoPath;
+
                 // Set session variable indicating society details are successfully inserted
                 $_SESSION["society_inserted"] = true;
             } else {
@@ -98,11 +105,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             if (mysqli_stmt_execute($stmt)) {
+                // Set session variables for secretary details
+                $_SESSION["firstName"] = $firstName;
+                $_SESSION["lastName"] = $lastName;
+                $_SESSION["email"] = $email;
+                $_SESSION["phone"] = $phone;
+                $_SESSION["password"] = $password;
+                $_SESSION["profilePicPath"] = $profilePicPath;
+
                 // Check if society details were successfully inserted
                 if (isset($_SESSION["society_inserted"]) && $_SESSION["society_inserted"] === true) {
-                    // Display step 3
+                    // Redirect to the next step
                     echo '<script>window.location.href = "./register_society.php"</script>';
-                    exit; // Exit after displaying step 3 content
+                    exit;
                 } else {
                     echo "Secretary details inserted successfully.";
                     // Redirect to a success page or do other processing as needed
@@ -961,6 +976,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     </div>
@@ -1204,6 +1220,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             });
 
             $('div.setup-panel div a.btn-primary').trigger('click');
+
+            // Check if society details were successfully inserted
+            if (<?php echo isset($_SESSION["society_inserted"]) ? 'true' : 'false'; ?>) {
+                // Trigger click event on step 3 button to display it
+                $('a[href="#step-3"]').trigger('click');
+                // Optionally, hide steps 1 and 2
+                $('#step-1, #step-2').hide();
+                // Clear the session variable to prevent this from running again on page reload
+                <?php unset($_SESSION["society_inserted"]); ?>
+            }
         });
     </script>
 

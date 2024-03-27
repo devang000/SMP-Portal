@@ -385,8 +385,8 @@
                     } else if (selectedValue === "1") {
                         window.location.href = "./Register_society.php";
                     } else {
-                        // Handle other options if needed
-                        // Example: window.location.href = "./other_page.php";
+                        // Append the selected society name as a query parameter in the URL
+                        window.location.href = "./society_index.php?society=" + encodeURIComponent(selectedValue);
                     }
                 });
             </script>

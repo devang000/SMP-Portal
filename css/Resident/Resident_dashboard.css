@@ -388,8 +388,11 @@ table {
   margin-right: 30px; /* Adjust as needed */
 }
 
-#calendar {
-  max-width: 1100px;
-
-  background-color: #ccc;
+.calender{
+    width: 1169px;
+    margin-left: 27px;
+    margin-top: 10px;
+    background-color: ghostwhite;
+    padding: 15px;
+    border-radius: 1%;
 }
