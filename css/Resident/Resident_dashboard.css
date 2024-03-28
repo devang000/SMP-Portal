@@ -306,9 +306,7 @@ body.dark .switch::before {
     100% - 88px
   ); /* Adjust the width of the home content when the sidebar is closed */
 }
-body.dark .home .text {
-  color: var(--text-color);
-}
+
 
 table {
   display: flex;
@@ -395,4 +393,5 @@ table {
     background-color: ghostwhite;
     padding: 15px;
     border-radius: 1%;
+
 }
