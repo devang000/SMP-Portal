@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['oldPassword'])) {
     <title>Resident Dashboard</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -59,6 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['oldPassword'])) {
     <!-- Ensure your custom CSS is loaded before FullCalendar's CSS -->
     <link rel="stylesheet" href="./css/Resident/Resident_dashboard.css">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/main.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
 
 </head>
 
@@ -91,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['oldPassword'])) {
                     </li>
 
                     <li class="nav-link">
-                        <a href="#">
+                        <a href="./Resident/bookEvent.php">
                             <i class="fa-solid fa-2xs fa-calendar-day icon"></i>
                             <span class="text nav-text">Book Amenities</span>
                         </a>
@@ -265,18 +268,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['oldPassword'])) {
 
 
         <div class="widgets">
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
-            <div class="box"></div>
+            <div class="box box1">
+                <div class="divheader1">
+                    My Home
+                </div>
+                <div class="ico">
+                    <i class="fa fa-home" style="color: darkgreen"></i>
+                </div>
+                <span class="span1"><?php echo $_SESSION["flatNo"]; ?></span>
+
+            </div>
+            <div class="box box2"></div>
+            <div class="box box3"></div>
+            <div class="box box4"></div>
         </div>
 
         <br>
         <!-- Main content -->
-
-        <div class="calender">
-            <div id='calendar'></div>
-        </div>
 
     </section>
 </body>
