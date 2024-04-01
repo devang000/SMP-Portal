@@ -1,340 +1,633 @@
 <?php
+include 'conn.php';
 session_start();
-require_once './conn.php'; // Adjust the path as needed
-
-// Function to validate the old password
-function validateOldPassword($conn, $oldPassword)
-{
-    // Fetch the stored password hash from the database
-    $username = $_SESSION['user_name'];
-    $sql = "SELECT password FROM residents WHERE username='$username'"; // Adjusted table name
-    $result = mysqli_query($conn, $sql);
-    if ($result) {
-        $row = mysqli_fetch_assoc($result);
-        $storedPasswordHash = $row['password'];
-        // Verify the old password against the stored hash
-        return password_verify($oldPassword, $storedPasswordHash);
-    } else {
-        // Error in fetching password from database
-        return "Database error";
-    }
-}
-
-// Check if the old password matches the one stored in the database
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['oldPassword'])) {
-    $oldPassword = $_POST['oldPassword'];
-    $validationResult = validateOldPassword($conn, $oldPassword);
-
-    // Respond with JSON indicating the result
-    if ($validationResult === true) {
-        $response = ['status' => 'success'];
-    } else {
-        $response = ['status' => 'error', 'message' => $validationResult];
-    }
-    echo json_encode($response);
-}
 ?>
-
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
     <title>Resident Dashboard</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <script src="./JS/Resident/Resident_dashboard.js"></script>
-    <!-- Ensure your custom CSS is loaded before FullCalendar's CSS -->
-    <link rel="stylesheet" href="./css/Resident/Resident_dashboard.css">
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/main.min.css" rel="stylesheet">
+    <!-- Favicons -->
+    <link href="./img/favicon.ico" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">    
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+
 
 </head>
 
 <body>
-    <!-- Side Panel Menu -->
-    <nav class="sidebar close">
-        <header>
-            <div class="image-text">
-                <span class="image">
-                    <img src="./img/SMP-removebg-preview.png" alt="">
-                </span>
 
-                <div class="text logo-text">
-                    <span class="name">SMS</span>
-                    <span class="profession">Society Management Portal</span>
-                </div>
-            </div>
-            <i class='fa fa-angle-right toggle' style="font-size: 15px;"></i>
-        </header>
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
 
-        <div class="menu-bar">
-            <div class="menu">
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="#" class="logo d-flex align-items-center">
+                <!-- <img src="" alt=""> -->
+                <span class="d-none d-lg-block"><?php echo $_SESSION['society_name']; ?></span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
 
-                <ul class="menu-links">
-                    <li class="nav-link">
-                        <a href="#">
-                            <i class="fa-solid fa-house fa-2xs icon"></i>
-                            <span class="text nav-text">Dashboard</span>
-                        </a>
-                    </li>
+        <!-- <div class="search-bar">
+            <form class="search-form d-flex align-items-center" method="POST" action="#">
+                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+            </form>
+        </div>End Search Bar -->
 
-                    <li class="nav-link">
-                        <a href="./Resident/bookEvent.php">
-                            <i class="fa-solid fa-2xs fa-calendar-day icon"></i>
-                            <span class="text nav-text">Book Amenities</span>
-                        </a>
-                    </li>
+        <nav class="header-nav ms-auto">
+            <ul class="d-flex align-items-center">
 
-                    <li class="nav-link">
-                        <a href="#">
-                            <i class="fa-solid fa-bullhorn fa-2xs icon"></i>
-                            <span class="text nav-text">Announcements</span>
-                        </a>
-                    </li>
+                <li class="nav-item d-block d-lg-none">
+                    <a class="nav-link nav-icon search-bar-toggle " href="#">
+                        <i class="bi bi-search"></i>
+                    </a>
+                </li><!-- End Search Icon-->
 
-                    <li class="nav-link">
-                        <a href="#">
-                            <i class="fa-regular fa-credit-card fa-2xs icon"></i>
-                            <span class="text nav-text">My bills</span>
-                        </a>
-                    </li>
+                <li class="nav-item dropdown">
 
-                    <li class="nav-link">
-                        <a href="#">
-                            <i class="fa-solid fa-users fa-2xs icon"></i>
-                            <span class="text nav-text">My Neighbours</span>
-                        </a>
-                    </li>
+                    <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge bg-danger badge-number">4</span>
+                    </a><!-- End Notification Icon -->
 
-                </ul>
-            </div>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="border-top: 5px solid #FFE600;">
+                        <li class="dropdown-header">
+                            You have 4 new notifications
+                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
 
-
-        </div>
-        </div>
-
-    </nav>
-
-    <section class="home">
-        <div class="text" style="height: 80px;">
-            Resident Dashboard
-            <table>
-                <tr>
-                    <td>
-                        <div class="dropdown">
-                            <a class="dropbtn" onclick="toggleDropdown()">
-                                👋 Hey! &nbsp;
-                                <?php echo $_SESSION["user_name"]; ?>
-                                <i class="fas fa-chevron-down"></i>&emsp;
-                            </a>
-                            <div id="dropdown-content" class="dropdown-content">
-                                <a href="my_profile.php"><i class="fas fa-user"></i>&nbsp; My Profile</a>
-                                <a href="#" onclick="ChangePass()"><i class="fas fa-key"></i>&nbsp; Change Password</a>
-                                <a href="#" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i>&nbsp; Logout</a>
+                        <li class="notification-item">
+                            <i class="bi bi-exclamation-circle text-warning"></i>
+                            <div>
+                                <h4>Lorem Ipsum</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>30 min. ago</p>
                             </div>
-                        </div>
-                    </td>
+                        </li>
 
-                    <td>
-                        <div class="profile-picture">
-                            <img src="<?php echo $_SESSION["user_profile_picture"]; ?>" alt="User Profile Image" height="50px" width="50px">
-                        </div>
-                    </td>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-x-circle text-danger"></i>
+                            <div>
+                                <h4>Atque rerum nesciunt</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>1 hr. ago</p>
+                            </div>
+                        </li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+
+                        <li class="notification-item">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <div>
+                                <h4>Sit rerum fuga</h4>
+                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <p>2 hrs. ago</p>
+                            </div>
+
+                        <li>
+                        </li>
+                        <hr class="dropdown-divider">
+                </li>
+
+                <li class="notification-item">
+                    <i class="bi bi-info-circle text-primary"></i>
+                    <div>
+                        <h4>Dicta reprehenderit</h4>
+                        <p>Quae dolorem earum veritatis oditseno</p>
+                        <p>4 hrs. ago</p>
+                    </div>
+                </li>
+
+                <li>
+                    <hr class="dropdown-divider">
+                </li>
+                <li class="dropdown-footer">
+                    <a href="#">Show all notifications</a>
+                </li>
+
+            </ul><!-- End Notification Dropdown Items -->
+
+            </li><!-- End Notification Nav -->
+
+
+
+            <li class="nav-item dropdown pe-3">
+
+                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                    <div style="
+                        width: 40px;
+                        height: auto; 
+                        border-radius: 50%;
+                        overflow: hidden;">
+                        <img src="<?php echo $_SESSION['user_profile_picture']; ?>" alt="Profile" class="rounded-circle" style="width: 100%; height:100% object-fit: cover;">
+                    </div>
+                    <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $_SESSION['user_name'] . " " . $_SESSION["lastname"] ?></span>
+                </a><!-- End Profile Iamge Icon -->
+
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="border-top: 4px solid #FFD700">
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="./users-profile.php">
+                            <i class="bi bi-person"></i>
+                            <span>My Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                            <i class="bi bi-gear"></i>
+                            <span>Account Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                            <i class="bi bi-question-circle"></i>
+                            <span>Need Help?</span>
+                        </a>
+                    </li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+
+                    <li class="custom">
+                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="showSignOutConfirmation()">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>Sign Out</span>
+                        </a>
+                    </li>
                     <script>
-                        function toggleDropdown() {
-                            document.getElementById("dropdown-content").classList.toggle("show");
-                        }
-
-                        function confirmLogout() {
-                            swal({
-                                    title: "Are you sure?",
-                                    text: "You will be logged out!",
-                                    icon: "warning",
-                                    buttons: true,
-                                    dangerMode: true,
-                                })
-                                .then((willLogout) => {
-                                    if (willLogout) {
-                                        window.location.href = "logout.php";
-                                    }
-                                });
-                        }
-
-
-                        function ChangePass() {
-                            swal({
-                                title: "Change Password",
-                                text: "Please enter your old password",
-                                icon: "warning",
-                                content: "input",
-                                dangerMode: "on",
-                                inputAttributes: {
-                                    placeholder: "Old Password",
-                                    type: "password",
-                                    id: "oldPassword"
-                                },
-                                buttons: {
-                                    cancel: {
-                                        text: "Cancel",
-                                        value: null,
-                                        visible: true,
-                                        className: "",
-                                        closeModal: true
-                                    },
-                                    confirm: {
-                                        text: "Next",
-                                        value: true,
-                                        visible: true,
-                                        className: "",
-                                        closeModal: false
-                                    }
-                                },
-                                closeOnClickOutside: false,
-                            }).then((willChangePassword) => {
-                                if (willChangePassword) {
-                                    const oldPassword = document.getElementById('oldPassword').value;
-                                    // Send the old password to the server for verification
-                                    $.ajax({
-                                        url: 'Resident_ds.php',
-                                        type: 'POST',
-                                        data: {
-                                            oldPassword: oldPassword
-                                        },
-                                        success: function(response) {
-                                            const result = JSON.parse(response);
-                                            if (result.status === 'success') {
-                                                // Old password is correct, proceed to enter new password
-                                                swal({
-                                                    title: "Change Password",
-                                                    text: "Please enter your new password",
-                                                    icon: "warning",
-                                                    content: "input",
-                                                    inputAttributes: {
-                                                        placeholder: "New Password",
-                                                        type: "password",
-                                                        id: "newPassword"
-                                                    },
-                                                    buttons: {
-                                                        cancel: {
-                                                            text: "Cancel",
-                                                            value: null,
-                                                            visible: true,
-                                                            className: "",
-                                                            closeModal: true
-                                                        },
-                                                        confirm: {
-                                                            text: "Change Password",
-                                                            value: true,
-                                                            visible: true,
-                                                            className: "",
-                                                            closeModal: false
-                                                        }
-                                                    },
-                                                    closeOnClickOutside: false,
-                                                }).then((willConfirmChange) => {
-                                                    if (willConfirmChange) {
-                                                        // Handle the logic to update the password in the database
-                                                        console.log("Change password logic here");
-                                                    }
-                                                });
-                                            } else {
-                                                // Display error message
-                                                swal("Error", result.message, "error");
-                                            }
-                                        }
-                                    });
+                        function showSignOutConfirmation() {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't to loggedout after that won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, sign out!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // Redirect to the logout script or perform the sign-out logic here
+                                    window.location.href = './logout.php'; // Example logout script
                                 }
-                            });
+                            })
                         }
                     </script>
-                </tr>
-            </table>
-        </div>
+
+                </ul><!-- End Profile Dropdown Items -->
+            </li><!-- End Profile Nav -->
+
+            </ul>
+        </nav><!-- End Icons Navigation -->
+
+    </header><!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link " href="index.html">
+                    <i class="bi bi-grid"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="users-profile.html">
+                    <i class="bi bi-calendar-week"></i>
+                    <span>Book Amenities</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="pages-faq.html">
+                    <i class="bi bi-megaphone"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="pages-contact.html">
+                    <i class="bi bi-credit-card"></i>
+                    <span>My bills</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="pages-register.html">
+                    <i class="bi bi-people"></i>
+                    <span>Neighbours</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="./society_index.php">Home</a></li>
+                    <li class="breadcrumb-item active">Dashboard</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+
+        <section class="section dashboard">
+            <div class="row">
+
+                <!-- Left side columns -->
+                <div class="col-lg-8">
+                    <div class="row">
+
+                        <!-- home Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card sales-card" style="border-top: 5px solid blue;">
+                                <div class="card-body">
+                                    <h5 class="card-title">My Home</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-house-door-fill"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6 style="font-size: 20px;"><?php echo $_SESSION['flatNo']; ?></h6>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div><!-- End Sales Card -->
+
+                        <!-- bill Card -->
+                        <div class="col-xxl-4 col-md-6">
+                            <div class="card info-card revenue-card" style="border-top: 5px solid #00eb00;">
+                                <div class="card-body">
+                                    <h5 class="card-title">Total Bill Ammount</h5>
+
+                                    <div class="d-flex align-items-center">
+                                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                            <i class="bi bi-currency-rupee"></i>
+                                        </div>
+                                        <div class="ps-3">
+                                            <h6>₹7,264</h6>
+                                            <span class="text-success fw-bold" style="font-size: 13px;      ">incl.</span><span class="text-muted small ps-1" style="font-size: 13px;">Maint. + Electricity + Gas</span>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div><!-- End bill Card -->
+
+                        <!-- My Event -->
+                        <div class="col-12">
+                            <div class="card recent-sales overflow-auto">
+                                <div class="card-body" style="border-top: 5px solid #FF8800;">
+                                    <h5 class="card-title">My Booked Events</h5>
+
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Event Name</th>
+                                                <th scope="col">Event <br>Description</th>
+                                                <th scope="col">Start Date/Time</th>
+                                                <th scope="col">End Date/Time</th>
+                                                <th scope="col">Booking Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2457</a></th>
+                                                <td>Brandon Jacob</td>
+                                                <td><a href="#" class="text-primary">At praesentium minu</a></td>
+                                                <td>$64</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2147</a></th>
+                                                <td>Bridie Kessler</td>
+                                                <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
+                                                <td>$47</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2049</a></th>
+                                                <td>Ashleigh Langosh</td>
+                                                <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
+                                                <td>$147</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Angus Grady</td>
+                                                <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
+                                                <td>$67</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-danger">Rejected</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Raheem Lehner</td>
+                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
+                                                <td>$165</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Raheem Lehner</td>
+                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
+                                                <td>$165</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div><!-- End Event-->
 
 
-        <div class="widgets">
-            <div class="box box1">
-                <div class="divheader1">
-                    My Home
-                </div>
-                <div class="ico">
-                    <i class="fa fa-home" style="color: darkgreen"></i>
-                </div>
-                <span class="span1"><?php echo $_SESSION["flatNo"]; ?></span>
+                        <!-- My Complaints -->
+                        <div class="col-12">
+                            <div class="card recent-sales overflow-auto">
+                                <div class="card-body" style="border-top: 5px solid #AE00FF;">
+                                    <h5 class="card-title">My Complaints Tickets</h5>
+
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">Event Name</th>
+                                                <th scope="col">Event <br>Description</th>
+                                                <th scope="col">Start Date/Time</th>
+                                                <th scope="col">End Date/Time</th>
+                                                <th scope="col">Booking Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2457</a></th>
+                                                <td>Brandon Jacob</td>
+                                                <td><a href="#" class="text-primary">At praesentium minu</a></td>
+                                                <td>$64</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2147</a></th>
+                                                <td>Bridie Kessler</td>
+                                                <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
+                                                <td>$47</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-warning">Pending</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2049</a></th>
+                                                <td>Ashleigh Langosh</td>
+                                                <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
+                                                <td>$147</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Angus Grady</td>
+                                                <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
+                                                <td>$67</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-danger">Rejected</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Raheem Lehner</td>
+                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
+                                                <td>$165</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><a href="#">#2644</a></th>
+                                                <td>Raheem Lehner</td>
+                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
+                                                <td>$165</td>
+                                                <td>23</td>
+                                                <td><span class="badge bg-success">Approved</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div><!-- End complaints-->
+
+                    </div>
+                </div><!-- End Left side columns -->
+
+                <!-- Right side columns -->
+                <div class="col-lg-4">
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-body" style="border-top: 5px solid yellow;">
+                            <h5 class="card-title">Upcomming Events</h5>
+
+                            <div class="activity">
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">31st Mar</div>
+                                    <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
+                                    <div class="activity-content">
+                                        Aman's Birthday Party
+                                        <a href="#" class="fw-bold text-dark">venue: club house</a>
+                                        <br>
+                                        8:00 pm
+                                    </div>
+                                </div><!-- End activity item-->
+
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">3rd Apr</div>
+                                    <i class='bi bi-circle-fill activity-badge text-primary align-self-start'></i>
+                                    <div class="activity-content">
+                                        Sonawala's Anniversary Party
+                                        <br>
+                                        <a href="#" class="fw-bold text-dark">venue: society garden</a>
+                                        <br>
+                                        7:00 pm
+                                    </div>
+                                </div><!-- End activity item-->
+
+
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">9th Apr</div>
+                                    <i class='bi bi-circle-fill activity-badge text-warning align-self-start'></i>
+                                    <div class="activity-content">
+                                        Society Meeting
+                                        <br>
+                                        <a href="#" class="fw-bold text-dark">venue: society office</a>
+                                        <br>
+                                        7:00 pm
+                                    </div>
+                                </div><!-- End activity item-->
+
+
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">10th Apr</div>
+                                    <i class='bi bi-circle-fill activity-badge text-info align-self-start'></i>
+                                    <div class="activity-content">
+                                        Vian's Engagement Ceremony
+                                        <br>
+                                        <a href="#" class="fw-bold text-dark">venue: common hall</a>
+                                        <br>
+                                        8:00 am
+                                    </div>
+                                </div><!-- End activity item-->
+
+
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">11th Apr</div>
+                                    <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
+                                    <div class="activity-content">
+                                        Ramadan Eid celebration
+                                        <a href="#" class="fw-bold text-dark">venue: society garden</a>
+                                        <br>
+                                        6:00 pm
+                                    </div>
+                                </div><!-- End activity item-->
+
+
+
+
+
+
+                            </div>
+
+                        </div>
+                    </div><!-- End Recent Activity -->
+
+                    <!-- Announcements -->
+                    <div class="card">
+
+                        <div class="card-body pb-0" style="border-top: 5px solid #464646;">
+                            <h5 class="card-title">News &amp; Announcements</h5>
+
+                            <div class="news">
+                                <div class="post-item clearfix">
+                                    <img src="assets/img/news-1.jpg" alt="">
+                                    <h4><a href="#">Nihil blanditiis at in nihil autem</a></h4>
+                                    <p>Sit recusandae non aspernatur laboriosam. Quia enim eligendi sed ut harum...</p>
+                                </div>
+
+                                <div class="post-item clearfix">
+                                    <img src="assets/img/news-2.jpg" alt="">
+                                    <h4><a href="#">Quidem autem et impedit</a></h4>
+                                    <p>Illo nemo neque maiores vitae officiis cum eum turos elan dries werona nande...</p>
+                                </div>
+
+                                <div class="post-item clearfix">
+                                    <img src="assets/img/news-3.jpg" alt="">
+                                    <h4><a href="#">Id quia et et ut maxime similique occaecati ut</a></h4>
+                                    <p>Fugiat voluptas vero eaque accusantium eos. Consequuntur sed ipsam et totam...</p>
+                                </div>
+
+                                <div class="post-item clearfix">
+                                    <img src="assets/img/news-4.jpg" alt="">
+                                    <h4><a href="#">Laborum corporis quo dara net para</a></h4>
+                                    <p>Qui enim quia optio. Eligendi aut asperiores enim repellendusvel rerum cuder...</p>
+                                </div>
+
+                                <div class="post-item clearfix">
+                                    <img src="assets/img/news-5.jpg" alt="">
+                                    <h4><a href="#">Et dolores corrupti quae illo quod dolor</a></h4>
+                                    <p>Odit ut eveniet modi reiciendis. Atque cupiditate libero beatae dignissimos eius...</p>
+                                </div>
+
+                            </div><!-- End sidebar recent posts-->
+
+                        </div>
+                    </div><!-- End News & Updates -->
+
+                </div><!-- End Right side columns -->
 
             </div>
-            <div class="box box2"></div>
-            <div class="box box3"></div>
-            <div class="box box4"></div>
+        </section>
+
+    </main><!-- End #main -->
+
+    <!-- ======= Footer ======= -->
+    <footer id="footer" class="footer">
+        <div class="copyright">
+            &copy; Copyright <strong><span>SMP - Society Management Portal</span></strong>. All Rights Reserved by Devang Gohil
         </div>
+    </footer><!-- End Footer -->
 
-        <br>
-        <!-- Main content -->
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-    </section>
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/chart.js/chart.umd.js"></script>
+    <script src="assets/vendor/echarts/echarts.min.js"></script>
+    <script src="assets/vendor/quill/quill.min.js"></script>
+    <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="assets/js/main.js"></script>
+
 </body>
 
-
-<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/main.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.7.2/locales-all.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            locale: 'en-in', // Set locale to Indian English
-            eventDisplay: 'block',
-            firstDay: 1,
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
-            },
-            editable: false,
-            droppable: false,
-            eventClick: function(el) {
-                el.jsEvent.preventDefault();
-                $("#showEventModal").modal('show');
-                $("#showEventModal").on('shown.bs.modal', function(e) {
-                    $('#loading_zone').hide();
-                    $('#target_zone').show();
-                });
-                $("#target_zone").load(decodeURIComponent(el.event.id));
-            }
-        });
-
-        calendar.render();
-    });
-</script>
-
-<script>
-    const body = document.querySelector('body'),
-        sidebar = body.querySelector('nav'),
-        toggle = body.querySelector(".toggle"),
-        searchBtn = body.querySelector(".search-box"),
-        modeSwitch = body.querySelector(".toggle-switch"),
-        modeText = body.querySelector(".mode-text");
-    toggle.addEventListener("click", () => {
-        sidebar.classList.toggle("close");
-    })
-    searchBtn.addEventListener("click", () => {
-        sidebar.classList.remove("close");
-    })
-</script>
+</html>

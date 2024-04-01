@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if ($conn->query($sql) === TRUE) {
         echo "<script>alert('✔ Registration successful!')
-        window.location.href = './index.php';
+        window.location.href = './society_index.php';
         </script>";
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;

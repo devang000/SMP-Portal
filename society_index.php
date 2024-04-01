@@ -17,7 +17,7 @@
             $password = trim($_POST["password"]);
             // Assuming you have a name column
             // Define the SQL query
-            $sql = "SELECT id, photo, firstname, password FROM residents WHERE email = ?";
+            $sql = "SELECT id, photo, firstname, society, lastname, phone_number, dob, flatNo, address, city,password FROM residents WHERE email = ?";
 
             // Prepare the statement
             if ($stmt = mysqli_prepare($conn, $sql)) {
@@ -33,6 +33,13 @@
                         $_SESSION["user_email"] = $email;
                         $_SESSION["user_profile_picture"] = $row["photo"]; // Assuming you have a profile_picture column
                         $_SESSION["user_name"] = $row["firstname"];
+                        $_SESSION["society_name"] = $row["society"];
+                        $_SESSION["lastname"] = $row["lastname"];
+                        $_SESSION["phone"] = $row["phone_number"];
+                        $_SESSION["dob"] = $row["dob"];
+                        $_SESSION["flatNo"] = $row["flatNo"];
+                        $_SESSION["address"] = $row["address"];
+                        $_SESSION["city"] = $row["city"];
 
                         echo '<script>
                                 console.log("Password is correct. Redirecting...");
