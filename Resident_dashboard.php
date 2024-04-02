@@ -236,7 +236,7 @@ session_start();
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="users-profile.html">
+                <a class="nav-link collapsed" href="./bookEvent.php">
                     <i class="bi bi-calendar-week"></i>
                     <span>Book Amenities</span>
                 </a>

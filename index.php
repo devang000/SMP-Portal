@@ -237,21 +237,7 @@ mysqli_close($conn);
 </head>
 
 <body>
-    <script type="text/javascript">
-        window.onload = function() {
-            function preventBack() {
-                window.location.href='./index.php';
-            }
-            setTimeout(preventBack, 0);
 
-            // Listen for the back/forward navigation event
-            window.onpageshow = function(evt) {
-                if (evt.persisted) {
-                    preventBack();
-                }
-            };
-        };
-    </script>
 
     <!-- Image Slider -->
     <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
@@ -663,12 +649,5 @@ mysqli_close($conn);
 
 
 </body>
-
-<script>
-    // Disable the back button functionality
-    window.onbeforeunload = function() {
-        return "You have been logged out. Please click OK to continue.";
-    };
-</script>
 
 </html>
