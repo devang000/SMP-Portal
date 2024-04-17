@@ -364,37 +364,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <a class="nav-link collapsed" href="./Resident_dashboard.php">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="users-profile.html">
+                <a class="nav-link collapsed" href="./bookEvent.php">
                     <i class="bi bi-calendar-week"></i>
                     <span>Book Amenities</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-faq.html">
+                <a class="nav-link collapsed" href="./announcement.php">
                     <i class="bi bi-megaphone"></i>
                     <span>Announcements</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-contact.html">
+                <a class="nav-link " href="./mybills.php">
                     <i class="bi bi-credit-card"></i>
                     <span>My bills</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-register.html">
+                <a class="nav-link collapsed" href="./neighbours.php">
                     <i class="bi bi-people"></i>
                     <span>Neighbours</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="./mycomplaints.php">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>Raise Ticket</span>
                 </a>
             </li>
 

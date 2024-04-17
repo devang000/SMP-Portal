@@ -4,6 +4,15 @@
     include "society_header.php";
     include "conn.php";
 
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
+
+
+        require './PHPMailer-master/src/Exception.php';
+        require_once("./PHPMailer-master/src/PHPMailer.php");
+        require_once("./PHPMailer-master/src/SMTP.php");
+        include "./society_header.php";
+        include "conn.php";
     // Fetch society names and output them as <option> elements
     $sql = "SELECT society_Name FROM society";
     $result = $conn->query($sql);

@@ -133,7 +133,7 @@ if (mysqli_num_rows($result) > 0) {
                 <div class="col-11 col-xl-2">
                     <div class="logo-container" style="margin-top: 10px; padding-bottom:30px">
                         <a href="./index.php">
-                            <img class="logo mt-2" src="<?php echo $logo_url; ?>" alt="logo" height="50px" width="auto">
+                            <img class="logo mt-2" src="<?php echo $logo_url; ?>" alt="logo" height="80px" width="auto">
                         </a>
                     </div>
                 </div>

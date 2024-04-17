@@ -1,36 +1,58 @@
 <?php
 include 'conn.php';
 session_start();
-?>
-<?php
 
-
-// Handle form submission and database insertion here
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Include your database connection file
     require_once 'conn.php';
 
-    // Retrieve form data
-    $eventName = $_POST['eventName'];
-    $eventDescription = $_POST['eventDescription'];
-    $eventVenue = $_POST['eventVenue'];
-    $eventStart = $_POST['eventStart'];
-    $eventEnd = $_POST['eventEnd'];
+    // Check if the form is submitted from the "Edit Event" modal
+    if (isset($_POST['eventId'])) {
+        // Retrieve form data
+        $eventId = $_POST['eventId'];
+        $eventName = $_POST['editEventName'];
+        $eventDescription = $_POST['editEventDescription'];
+        $eventVenue = $_POST['editEventVenue'];
+        $eventStart = $_POST['editEventStartDate'];
+        $eventEnd = $_POST['editEventEndDate'];
 
-    // Prepare and execute the SQL statement to insert data into the events table
-    $stmt = $conn->prepare("INSERT INTO events (eName, eDescription, eVenue, eStartDate, eEndDate) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $eventName, $eventDescription, $eventVenue, $eventStart, $eventEnd);
+        // Prepare and execute the SQL statement to update the event in the database
+        $stmt = $conn->prepare("UPDATE events SET eName = ?, eDescription = ?, eVenue = ?, eStartDate = ?, eEndDate = ? WHERE eID = ?");
+        $stmt->bind_param("sssssi", $eventName, $eventDescription, $eventVenue, $eventStart, $eventEnd, $eventId);
 
-    if ($stmt->execute()) {
-        // If insertion is successful
-        echo json_encode(array('status' => 'success', 'message' => 'Event added successfully'));
+        if ($stmt->execute()) {
+            echo json_encode(array('status' => 'success', 'message' => 'Event updated successfully'));
+        } else {
+            // Check for errors
+            echo json_encode(array('status' => 'error', 'message' => 'Error updating event: ' . $stmt->error));
+        }
+
+        $stmt->close();
     } else {
-        // If insertion fails
-        echo json_encode(array('status' => 'error', 'message' => 'Error adding event'));
-    }
+        // Retrieve form data for adding a new event
+        $eventName = $_POST['eventName'];
+        $eventDescription = $_POST['eventDescription'];
+        $eventVenue = $_POST['eventVenue'];
+        $eventStart = $_POST['eventStart'];
+        $eventEnd = $_POST['eventEnd'];
 
-    // Close statement
-    $stmt->close();
+        // Prepare and execute the SQL statement to insert a new event into the database
+        $stmt = $conn->prepare("INSERT INTO events (eName, eDescription, eVenue, eStartDate, eEndDate, status) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $eventName, $eventDescription, $eventVenue, $eventStart, $eventEnd, $status);
+
+        // Set the status to 'p' by default
+        $status = 'p';
+
+        if ($stmt->execute()) {
+            // If insertion is successful
+            echo json_encode(array('status' => 'success', 'message' => 'Event added successfully'));
+        } else {
+            // If insertion fails
+            echo json_encode(array('status' => 'error', 'message' => 'Error adding event'));
+        }
+
+        // Close statement
+        $stmt->close();
+    }
 
     // Close connection
     $conn->close();
@@ -60,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="path/to/fullcalendar/main.css" rel="stylesheet" />
     <!-- FullCalendar JS -->
     <script src="path/to/fullcalendar/main.js"></script>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Include Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Include FullCalendar CSS -->
@@ -106,13 +128,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
-        <!-- <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="#">
-                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
-        </div>End Search Bar -->
-
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
 
@@ -132,7 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="border-top: 5px solid #FFE600;">
                         <li class="dropdown-header">
                             You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            <a href="./announcement.php"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -141,8 +156,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li class="notification-item">
                             <i class="bi bi-exclamation-circle text-warning"></i>
                             <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Annual General Meeting (AGM) Notice</h4>
                                 <p>30 min. ago</p>
                             </div>
                         </li>
@@ -154,8 +168,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li class="notification-item">
                             <i class="bi bi-x-circle text-danger"></i>
                             <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Community Cleanup Drive</h4>
+
                                 <p>1 hr. ago</p>
                             </div>
                         </li>
@@ -167,8 +181,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li class="notification-item">
                             <i class="bi bi-check-circle text-success"></i>
                             <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Summer Picnic Day</h4>
+
                                 <p>2 hrs. ago</p>
                             </div>
 
@@ -180,8 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li class="notification-item">
                     <i class="bi bi-info-circle text-primary"></i>
                     <div>
-                        <h4>Dicta reprehenderit</h4>
-                        <p>Quae dolorem earum veritatis oditseno</p>
+                        <h4>Book Donation Drive</h4>
                         <p>4 hrs. ago</p>
                     </div>
                 </li>
@@ -190,7 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <hr class="dropdown-divider">
                 </li>
                 <li class="dropdown-footer">
-                    <a href="#">Show all notifications</a>
+                    <a href="./announcement.php">Show all notifications</a>
                 </li>
 
             </ul><!-- End Notification Dropdown Items -->
@@ -282,37 +295,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <a class="nav-link collapsed" href="./Resident_dashboard.php">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./bookEvent.php">
+                <a class="nav-link " href="./bookEvent.php">
                     <i class="bi bi-calendar-week"></i>
                     <span>Book Amenities</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-faq.html">
+                <a class="nav-link collapsed" href="./announcement.php">
                     <i class="bi bi-megaphone"></i>
                     <span>Announcements</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-contact.html">
+                <a class="nav-link collapsed" href="./mybills.php">
                     <i class="bi bi-credit-card"></i>
                     <span>My bills</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-register.html">
+                <a class="nav-link collapsed" href="./neighbours.php">
                     <i class="bi bi-people"></i>
                     <span>Neighbours</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="./mycomplaints.php">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>Raise Ticket</span>
                 </a>
             </li>
 
@@ -335,10 +355,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <section class="section">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Book your event by clicking on day:)</h5>
+                    <h5 class="card-title">Book your event by clicking on date :)</h5>
                     <div id="calendar"></div>
 
-                    <!-- Bootstrap Modal -->
+                    <!-- Add event Modal -->
                     <div class="modal fade" id="addEventModal" tabindex="-1" role="dialog" aria-labelledby="addEventModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -370,13 +390,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <label for="eventEnd">Event End:</label>
                                             <input type="datetime-local" class="form-control" id="eventEnd" name="eventEnd">
                                         </div>
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                        <div class="modal-footer bg-body-tertiary p-1">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Event Details Modal -->
+                    <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-warning text-dark">
+                                    <h5 class="modal-title fw-bold" id="eventTitleModal"></h5>
+                                    <button type="button btn" class="close text-dark modal-close-btn" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="table table-striped">
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Description:</strong></td>
+                                                <td><span id="eventDescriptionModal"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Venue:</strong></td>
+                                                <td><span id="eventVenueModal"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Start:</strong></td>
+                                                <td><span id="eventStartModal"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>End:</strong></td>
+                                                <td><span id="eventEndModal"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Status:</strong></td>
+                                                <td><span id="eventStatusModal"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-warning" id="addAnotherEventBtn"><i class="fa fa-pencil"></i>&nbsp; Edit Event</button>
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </section>
@@ -395,7 +466,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         {
             global $conn;
 
-            $sql = "SELECT * FROM events";
+            $sql = "SELECT eID, eName, eDescription, eVenue, eStartDate, eEndDate, status FROM events";
             $result = $conn->query($sql);
 
             $events = array();
@@ -403,9 +474,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     $event = array(
+                        'id' => $row['eID'],
                         'title' => $row['eName'],
+                        'description' => $row['eDescription'],
+                        'venue' => $row['eVenue'],
                         'start' => $row['eStartDate'],
                         'end' => $row['eEndDate'],
+                        'status' => $row['status'], // Include the status field
                         'backgroundColor' => getRandomColor()
                     );
                     array_push($events, $event);
@@ -414,6 +489,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             return json_encode($events);
         }
+
+
 
         // Function to generate a random color
         function getRandomColor()
@@ -440,24 +517,95 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     },
                     editable: false,
                     droppable: false,
+
                     dateClick: function(info) {
-                        $('#addEventModal').modal('show');
-                        document.getElementById('eventStart').value = info.dateStr;
-                        document.getElementById('eventEnd').value = info.dateStr;
+                        // Check if there are any events on the clicked date
+                        var clickedDate = info.dateStr;
+                        var eventsOnClickedDate = calendar.getEvents().filter(function(event) {
+                            return event.startStr <= clickedDate && event.endStr >= clickedDate;
+                        });
+
+                        if (eventsOnClickedDate.length > 0) {
+                            // If there are events on the clicked date, show the event details modal
+                            var eventData = eventsOnClickedDate[0].extendedProps;
+                            $('#eventModalTitle').text(eventData.title);
+                            $('#eventDescription').text(eventData.description);
+                            $('#eventVenue').text(eventData.venue);
+                            $('#eventStart').text(eventData.start);
+                            $('#eventEnd').text(eventData.end);
+
+                            $('#eventDetailsModal').modal('show');
+                        } else {
+                            // If there are no events on the clicked date, show the add event modal
+                            $('#addEventModal').modal('show');
+                            // Set the start and end date fields to the clicked date
+                            document.getElementById('eventStart').value = clickedDate;
+                            document.getElementById('eventEnd').value = clickedDate;
+                        }
                     },
+
+                    eventClick: function(info) {
+                        var event = info.event;
+                        var eventData = event.extendedProps;
+
+                        $('#eventTitleModal').text(event.title);
+
+                        $('#eventDescriptionModal').text(eventData.description);
+                        $('#eventVenueModal').text(eventData.venue);
+                        $('#eventStartModal').text(event.start.toLocaleString());
+                        $('#eventEndModal').text(event.end.toLocaleString());
+                        $('#eventStatusModal').text(eventData.status); // This should now work
+                        $('#eventDetailsModal').modal('show');
+                    },
+
                     events: <?php echo getEventsFromDatabase(); ?>
                 });
 
                 calendar.render();
 
-                $('#addEventModal').on('hidden.bs.modal', function(e) {
-                    // Reset the form fields when the modal is closed
-                    $('#addEventForm')[0].reset();
+                // Event listener for the modal close button
+                $(document).on('click', '#eventDetailsModal .modal-close-btn, #eventDetailsModal .btn-danger', function() {
+                    $('#eventDetailsModal').modal('hide');
                 });
+
+                // Add an event listener for the eventClick event to display event details
+                calendar.on('eventClick', function(info) {
+                    var event = info.event;
+                    var eventData = event.extendedProps;
+
+                    $('#eventTitleModal').text(event.title);
+                    $('#eventDescriptionModal').text(eventData.description);
+                    $('#eventVenueModal').text(eventData.venue);
+                    $('#eventStartModal').text(event.start.toLocaleString());
+                    $('#eventEndModal').text(event.end.toLocaleString());
+
+                    // Set the status badge based on the status value
+                    var statusBadgeClass;
+                    var statusText;
+                    if (eventData.status === 'p') {
+                        statusBadgeClass = 'badge-warning';
+                        statusText = 'Request Pending';
+                    } else if (eventData.status === 'y') {
+                        statusBadgeClass = 'badge-success';
+                        statusText = 'Success';
+                    } else if (eventData.status === 'n') {
+                        statusBadgeClass = 'badge-danger';
+                        statusText = 'Danger';
+                    }
+
+                    // Update the status badge
+                    $('#eventStatusModal').html('<span class="badge ' + statusBadgeClass + '">' + statusText + '</span>');
+
+                    // Show the event details modal
+                    $('#eventDetailsModal').modal('show');
+                });
+
                 // Close modal when close buttons are clicked
-                $('.modal-close-btn, .btn-secondary').click(function() {
+                $('#addEventModal').on('click', '.modal-close-btn, .btn-secondary', function() {
                     $('#addEventModal').modal('hide');
                 });
+
+                // Submit form via AJAX
                 $('#addEventForm').submit(function(event) {
                     event.preventDefault();
 
@@ -471,8 +619,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         success: function(response) {
                             console.log(response);
                             $('#addEventModal').modal('hide');
-                            window.location.reload;
-
+                            window.location.reload();
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
@@ -484,7 +631,140 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </script>
 
 
+
     </main><!-- End #main -->
+
+    <!-- Edit Event Modal -->
+    <div class="modal fade" id="editEventModal" tabindex="-1" role="dialog" aria-labelledby="editEventModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold" id="editEventModalLabel"><i class="fa fa-edit"></i> &nbsp;Edit Event</h5>
+                    <button type="button" class="close text-dark" data-dismiss="modal" aria-label="Close" onclick="$('#editEventModal').modal('hide');">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editEventForm" method="post" action="./bookEvent.php">
+                        <input type="hidden" id="eventId" name="eventId">
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr>
+                                    <td>Event Name:</td>
+                                    <td><input type="text" class="form-control" id="editEventName" name="editEventName"></td>
+                                </tr>
+                                <tr>
+                                    <td>Event Description:</td>
+                                    <td><textarea class="form-control" id="editEventDescription" name="editEventDescription"></textarea></td>
+                                </tr>
+                                <tr>
+                                    <td>Event Venue:</td>
+                                    <td><input type="text" class="form-control" id="editEventVenue" name="editEventVenue"></td>
+                                </tr>
+                                <tr>
+                                    <td>Event Start Date:</td>
+                                    <td><input type="text" class="form-control" id="editEventStartDate" name="editEventStartDate"></td>
+                                </tr>
+                                <tr>
+                                    <td>Event End Date:</td>
+                                    <td><input type="text" class="form-control" id="editEventEndDate" name="editEventEndDate"></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                        <div class="modal-footer bg-light">
+                            <button type="button" class="btn btn-light ml-1" onclick="$('#editEventModal').modal('hide');">Close</button>
+                            <button type="submit" class="btn btn-warning"><i class="fa fa-check"></i>&nbsp;Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+    <!-- jQuery UI Timepicker Addon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui-timepicker-addon/1.6.3/jquery-ui-timepicker-addon.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#editEventStartDate').datetimepicker({
+                dateFormat: 'yy-mm-dd',
+                timeFormat: 'HH:mm:ss',
+                controlType: 'select',
+                oneLine: true
+            });
+
+            $('#editEventEndDate').datetimepicker({
+                dateFormat: 'yy-mm-dd',
+                timeFormat: 'HH:mm:ss',
+                controlType: 'select',
+                oneLine: true
+            });
+        });
+    </script>
+
+    <script>
+        // Event listener for the Edit Event button
+        $('#addAnotherEventBtn').click(function() {
+            // Fetch the event details from the event details modal
+            var eventId = $('#eventIdModal').val(); // Assuming you have an input field with id 'eventIdModal' to store the event ID
+            var eventTitle = $('#eventTitleModal').text();
+            var eventDescription = $('#eventDescriptionModal').text();
+            var eventVenue = $('#eventVenueModal').text();
+            var eventStart = $('#eventStartModal').text();
+            var eventEnd = $('#eventEndModal').text();
+            var eventStatus = $('#eventStatusModal').text();
+
+            // Convert the eventStart and eventEnd to datetime-local format
+            var formattedStart = eventStart.replace(" ", "T");
+            var formattedEnd = eventEnd.replace(" ", "T");
+
+            // Populate the form fields in the edit event modal
+            $('#editEventName').val(eventTitle);
+            $('#editEventDescription').val(eventDescription);
+            $('#editEventVenue').val(eventVenue);
+            $('#editEventStartDate').val(formattedStart); // Set the correct start date format
+            $('#editEventEndDate').val(formattedEnd); // Set the correct end date format
+            // Populate the event ID
+            $('#eventId').val(eventId); // Set the event ID to the hidden input field in the edit modal
+
+            // Show the edit event modal
+            $('#eventDetailsModal').modal('hide');
+            $('#editEventModal').modal('show');
+        });
+    </script>
+    <script>
+        $('#editEventForm').submit(function(event) {
+            event.preventDefault();
+
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'), // Ensure this points to your PHP script
+
+                data: formData,
+                success: function(response) {
+                    console.log(response);
+                    $('#editEventModal').modal('hide');
+                    window.location.reload();
+                    alert('Event updated successfully');
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('Error updating event');
+                }
+            });
+        });
+    </script>
+
 
     <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">

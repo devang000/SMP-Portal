@@ -53,13 +53,6 @@ session_start();
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div><!-- End Logo -->
 
-        <!-- <div class="search-bar">
-            <form class="search-form d-flex align-items-center" method="POST" action="#">
-                <input type="text" name="query" placeholder="Search" title="Enter search keyword">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-            </form>
-        </div>End Search Bar -->
-
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
 
@@ -79,7 +72,7 @@ session_start();
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style="border-top: 5px solid #FFE600;">
                         <li class="dropdown-header">
                             You have 4 new notifications
-                            <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
+                            <a href="./announcement.php"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">
@@ -88,8 +81,7 @@ session_start();
                         <li class="notification-item">
                             <i class="bi bi-exclamation-circle text-warning"></i>
                             <div>
-                                <h4>Lorem Ipsum</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Annual General Meeting (AGM) Notice</h4>
                                 <p>30 min. ago</p>
                             </div>
                         </li>
@@ -101,8 +93,8 @@ session_start();
                         <li class="notification-item">
                             <i class="bi bi-x-circle text-danger"></i>
                             <div>
-                                <h4>Atque rerum nesciunt</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Community Cleanup Drive</h4>
+
                                 <p>1 hr. ago</p>
                             </div>
                         </li>
@@ -114,8 +106,8 @@ session_start();
                         <li class="notification-item">
                             <i class="bi bi-check-circle text-success"></i>
                             <div>
-                                <h4>Sit rerum fuga</h4>
-                                <p>Quae dolorem earum veritatis oditseno</p>
+                                <h4>Summer Picnic Day</h4>
+
                                 <p>2 hrs. ago</p>
                             </div>
 
@@ -127,8 +119,7 @@ session_start();
                 <li class="notification-item">
                     <i class="bi bi-info-circle text-primary"></i>
                     <div>
-                        <h4>Dicta reprehenderit</h4>
-                        <p>Quae dolorem earum veritatis oditseno</p>
+                        <h4>Book Donation Drive</h4>
                         <p>4 hrs. ago</p>
                     </div>
                 </li>
@@ -137,7 +128,7 @@ session_start();
                     <hr class="dropdown-divider">
                 </li>
                 <li class="dropdown-footer">
-                    <a href="#">Show all notifications</a>
+                    <a href="./announcement.php">Show all notifications</a>
                 </li>
 
             </ul><!-- End Notification Dropdown Items -->
@@ -243,7 +234,7 @@ session_start();
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-faq.html">
+                <a class="nav-link collapsed" href="./announcement.php">
                     <i class="bi bi-megaphone"></i>
                     <span>Announcements</span>
                 </a>
@@ -257,9 +248,16 @@ session_start();
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="pages-register.html">
+                <a class="nav-link collapsed" href="./neighbours.php">
                     <i class="bi bi-people"></i>
                     <span>Neighbours</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="./mycomplaints.php">
+                    <i class="bi bi-ticket-perforated"></i>
+                    <span>Raise Ticket</span>
                 </a>
             </li>
 
@@ -326,6 +324,9 @@ session_start();
                         </div><!-- End bill Card -->
 
                         <!-- My Event -->
+
+
+                        <!-- My Event -->
                         <div class="col-12">
                             <div class="card recent-sales overflow-auto">
                                 <div class="card-body" style="border-top: 5px solid #FF8800;">
@@ -336,66 +337,57 @@ session_start();
                                             <tr>
                                                 <th scope="col">#</th>
                                                 <th scope="col">Event Name</th>
-                                                <th scope="col">Event <br>Description</th>
+                                                <th scope="col">Event Description</th>
                                                 <th scope="col">Start Date/Time</th>
                                                 <th scope="col">End Date/Time</th>
                                                 <th scope="col">Booking Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2457</a></th>
-                                                <td>Brandon Jacob</td>
-                                                <td><a href="#" class="text-primary">At praesentium minu</a></td>
-                                                <td>$64</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2147</a></th>
-                                                <td>Bridie Kessler</td>
-                                                <td><a href="#" class="text-primary">Blanditiis dolor omnis similique</a></td>
-                                                <td>$47</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-warning">Pending</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2049</a></th>
-                                                <td>Ashleigh Langosh</td>
-                                                <td><a href="#" class="text-primary">At recusandae consectetur</a></td>
-                                                <td>$147</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2644</a></th>
-                                                <td>Angus Grady</td>
-                                                <td><a href="#" class="text-primar">Ut voluptatem id earum et</a></td>
-                                                <td>$67</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-danger">Rejected</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2644</a></th>
-                                                <td>Raheem Lehner</td>
-                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                                <td>$165</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row"><a href="#">#2644</a></th>
-                                                <td>Raheem Lehner</td>
-                                                <td><a href="#" class="text-primary">Sunt similique distinctio</a></td>
-                                                <td>$165</td>
-                                                <td>23</td>
-                                                <td><span class="badge bg-success">Approved</span></td>
-                                            </tr>
+                                            <?php
+                                            // Include your database connection file
+                                            require_once 'conn.php';
+
+                                            // Fetch events from the database
+                                            $sql = "SELECT * FROM events";
+                                            $result = $conn->query($sql);
+
+                                            if ($result->num_rows > 0) {
+                                                // Output data of each row
+                                                while ($row = $result->fetch_assoc()) {
+                                                    echo "<tr>";
+                                                    echo "<th scope='row'><a href='#'>" . $row['eID'] . "</a></th>";
+                                                    echo "<td>" . $row['eName'] . "</td>";
+                                                    echo "<td><a href='#' class='text-primary'>" . $row['eDescription'] . "</a></td>";
+                                                    echo "<td>" . $row['eStartDate'] . "</td>";
+                                                    echo "<td>" . $row['eEndDate'] . "</td>";
+                                                    $badge = '';
+                                                    switch ($row['status']) {
+                                                        case 'p':
+                                                            $badge = '<span class="badge bg-warning">Pending</span>';
+                                                            break;
+                                                        case 'y':
+                                                            $badge = '<span class="badge bg-success">Booked</span>';
+                                                            break;
+                                                        case 'n':
+                                                            $badge = '<span class="badge bg-danger">Rejected</span>';
+                                                            break;
+                                                        default:
+                                                            $badge = '<span class="badge bg-secondary">Unknown</span>';
+                                                    }
+
+                                                    echo "<td>" . $badge . "</td>";
+                                                    echo "</tr>";
+                                                }
+                                            } else {
+                                                echo "<tr><td colspan='6'>No events found</td></tr>";
+                                            }
+                                            $conn->close();
+                                            ?>
                                         </tbody>
                                     </table>
 
                                 </div>
-
                             </div>
                         </div><!-- End Event-->
 
@@ -546,12 +538,6 @@ session_start();
                                         6:00 pm
                                     </div>
                                 </div><!-- End activity item-->
-
-
-
-
-
-
                             </div>
 
                         </div>

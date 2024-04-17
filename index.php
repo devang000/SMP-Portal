@@ -254,16 +254,16 @@ mysqli_close($conn);
                 <img class="d-block w-100" src="./img/i5.png" alt="Second slide">
                 <div class="overlay"></div> <!-- Black overlay -->
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Second Slide Heading</h5>
-                    <p>Description for the second slide.</p>
+                    <h1 style="color: white">Community Connect</h1>
+                    <h5 style="color: white">Get to know your neighbours, discover society events, find a maid or gym instructor & so much more.</h5>
                 </div>
             </div>
             <div class="carousel-item">
                 <img class="d-block w-100" src="./img/i1.png" alt="Third slide">
                 <div class="overlay"></div> <!-- Black overlay -->
                 <div class="carousel-caption d-none d-md-block">
-                    <h5>Third Slide Heading</h5>
-                    <p>Description for the third slide.</p>
+                    <h1 class="text-white">Neighbourhood Discovery</h1>
+                    <h5 class="text-white">Find out everything that's going on around you, from the best home chef to the local football tournament.</h5>
                 </div>
             </div>
         </div>
