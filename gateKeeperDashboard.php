@@ -2,6 +2,16 @@
 include 'conn.php';
 session_start();
 ?>
+<?php
+
+
+$selectedSociety = ''; // Initialize $selectedSociety to avoid the warning
+if (isset($_GET['society'])) {
+    $selectedSociety = $_GET['society'];
+    $_SESSION["selectedSociety"] = $selectedSociety; // Store the selected society in session
+}
+//echo $_SESSION["selectedSociety"];
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,13 +20,13 @@ session_start();
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Resident Dashboard</title>
+    <title>GateKeeper Dashboard</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Favicons -->
     <link href="./img/favicon.ico" rel="icon">
     <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
@@ -36,7 +46,6 @@ session_start();
 
     <!-- Template Main CSS File -->
     <link href="assets/css/style.css" rel="stylesheet">
-
 
 </head>
 
@@ -134,81 +143,29 @@ session_start();
             </ul><!-- End Notification Dropdown Items -->
 
             </li><!-- End Notification Nav -->
+            <a class="btn btn-outline-danger d-flex align-items-center" href="#" onclick="showSignOutConfirmation()">
+                <i class="bi bi-box-arrow-right"></i>&nbsp;
+                <span>Sign Out</span>
+            </a>
 
-
-
-            <li class="nav-item dropdown pe-3">
-
-                <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                    <div style="
-                        width: 40px;
-                        height: auto; 
-                        border-radius: 50%;
-                        overflow: hidden;">
-                        <img src="<?php echo $_SESSION['user_profile_picture']; ?>" alt="Profile" class="rounded-circle" style="width: 100%; height:100% object-fit: cover;">
-                    </div>
-                    <span class="d-none d-md-block dropdown-toggle ps-2"><?php echo $_SESSION['user_name'] . " " . $_SESSION["lastname"] ?></span>
-                </a><!-- End Profile Iamge Icon -->
-
-                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style="border-top: 4px solid #FFD700">
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="./users-profile.php">
-                            <i class="bi bi-person"></i>
-                            <span>My Profile</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
-                            <i class="bi bi-gear"></i>
-                            <span>Account Settings</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li>
-                        <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
-                            <i class="bi bi-question-circle"></i>
-                            <span>Need Help?</span>
-                        </a>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-
-                    <li class="custom">
-                        <a class="dropdown-item d-flex align-items-center" href="#" onclick="showSignOutConfirmation()">
-                            <i class="bi bi-box-arrow-right"></i>
-                            <span>Sign Out</span>
-                        </a>
-                    </li>
-                    <script>
-                        function showSignOutConfirmation() {
-                            Swal.fire({
-                                title: 'Are you sure?',
-                                text: "You won't to loggedout after that won't be able to revert this!",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Yes, sign out!'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Redirect to the logout script or perform the sign-out logic here
-                                    window.location.href = './logout.php'; // Example logout script
-                                }
-                            })
+            <script>
+                function showSignOutConfirmation() {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't to loggedout after that won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, sign out!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to the logout script or perform the sign-out logic here
+                            window.location.href = './logout.php'; // Example logout script
                         }
-                    </script>
-
-                </ul><!-- End Profile Dropdown Items -->
-            </li><!-- End Profile Nav -->
+                    })
+                }
+            </script>
 
             </ul>
         </nav><!-- End Icons Navigation -->
@@ -220,42 +177,28 @@ session_start();
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " href="index.html">
+                <a class="nav-link " href="./gateKeeperDashboard.php">
                     <i class="bi bi-grid"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./bookEvent.php">
-                    <i class="bi bi-calendar-week"></i>
-                    <span>Book Amenities</span>
+                <a class="nav-link collapsed" href="./visitors.php">
+                    <i class="bi bi-people"></i>
+                    <span>Visitors</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./announcement.php">
+                <a class="nav-link collapsed" href="./announcement2.php">
                     <i class="bi bi-megaphone"></i>
                     <span>Announcements</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="./mybills.php">
-                    <i class="bi bi-credit-card"></i>
-                    <span>My bills</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="./neighbours.php">
-                    <i class="bi bi-people"></i>
-                    <span>Neighbours</span>
-                </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="./mycomplaints.php">
+                <a class="nav-link collapsed" href="./mycomplaints2.php">
                     <i class="bi bi-ticket-perforated"></i>
                     <span>Raise Ticket</span>
                 </a>
@@ -288,13 +231,13 @@ session_start();
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card sales-card" style="border-top: 5px solid blue;">
                                 <div class="card-body">
-                                    <h5 class="card-title">My Home</h5>
+                                    <h5 class="card-title">My Identitiy</h5>
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-house-door-fill"></i>
+                                            <i class="bi bi-person-badge-fill"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6 style="font-size: 20px;"><?php echo $_SESSION['flatNo']; ?></h6>
+                                            <h6 style="font-size: 20px;">GUDT052</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -302,20 +245,31 @@ session_start();
                             </div>
                         </div><!-- End Sales Card -->
 
-                        <!-- bill Card -->
+                        <!-- Total  Visiot Card -->
                         <div class="col-xxl-4 col-md-6">
                             <div class="card info-card revenue-card" style="border-top: 5px solid #00eb00;">
                                 <div class="card-body">
-                                    <h5 class="card-title">Total Bill Ammount</h5>
+                                    <h5 class="card-title">Total Visitors</h5>
 
                                     <div class="d-flex align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                            <i class="bi bi-currency-rupee"></i>
+                                            <i class="bi bi-people-fill"></i>
                                         </div>
                                         <div class="ps-3">
-                                            <h6>₹7,264</h6>
-                                            <span class="text-success fw-bold" style="font-size: 13px;      ">incl.</span><span class="text-muted small ps-1" style="font-size: 13px;">Maint. + Electricity + Gas</span>
-
+                                            <?php
+                                            // Query to fetch the total number of records
+                                            $sql = "SELECT COUNT(*) AS total_records FROM visitor";
+                                            $result = $conn->query($sql);
+                                            if ($result && $result->num_rows > 0) {
+                                                $row = $result->fetch_assoc();
+                                                $total_records = $row['total_records'];
+                                            } else {
+                                                $total_records = 0;
+                                            }
+                                            ?>
+                                            <h6>
+                                                <td><?php echo $total_records; ?></td>
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
@@ -330,156 +284,70 @@ session_start();
                         <div class="col-12">
                             <div class="card recent-sales overflow-auto">
                                 <div class="card-body" style="border-top: 5px solid #FF8800;">
-                                    <h5 class="card-title">My Booked Events</h5>
+                                    <h5 class="card-title">Today's Visitor(s)</h5>
 
                                     <table class="table table-borderless datatable">
                                         <thead>
                                             <tr>
                                                 <th scope="col">#</th>
-                                                <th scope="col">Event Name</th>
-                                                <th scope="col">Event Description</th>
-                                                <th scope="col">Start Date/Time</th>
-                                                <th scope="col">End Date/Time</th>
-                                                <th scope="col">Booking Status</th>
+                                                <th scope="col">Visitor Name</th>
+                                                <th scope="col">Whom to Visit</th>
+                                                <th scope="col">Visitor Status</th>
+                                                <th scope="col">Gate Pass</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
-                                            // Include your database connection file
-                                            require_once 'conn.php';
-
-                                            // Fetch events from the database
-                                            $sql = "SELECT * FROM events";
+                                            // Fetch visitors data from the database
+                                            $sql = "SELECT * FROM visitor";
                                             $result = $conn->query($sql);
 
-                                            if ($result->num_rows > 0) {
-                                                // Output data of each row
-                                                while ($row = $result->fetch_assoc()) {
-                                                    echo "<tr>";
-                                                    echo "<th scope='row'><a href='#'>" . $row['eID'] . "</a></th>";
-                                                    echo "<td>" . $row['eName'] . "</td>";
-                                                    echo "<td><a href='#' class='text-primary'>" . $row['eDescription'] . "</a></td>";
-                                                    echo "<td>" . $row['eStartDate'] . "</td>";
-                                                    echo "<td>" . $row['eEndDate'] . "</td>";
-                                                    $badge = '';
-                                                    switch ($row['status']) {
-                                                        case 'p':
-                                                            $badge = '<span class="badge bg-warning">Pending</span>';
-                                                            break;
-                                                        case 'y':
-                                                            $badge = '<span class="badge bg-success">Booked</span>';
-                                                            break;
-                                                        case 'n':
-                                                            $badge = '<span class="badge bg-danger">Rejected</span>';
-                                                            break;
-                                                        default:
-                                                            $badge = '<span class="badge bg-secondary">Unknown</span>';
-                                                    }
+                                            if ($result) {
+                                                if ($result->num_rows > 0) {
+                                                    // Output data of each row
+                                                    while ($row = $result->fetch_assoc()) {
+                                                        echo "<tr>";
+                                                        echo "<td>" . $row["vid"] . "</td>";
+                                                        echo "<td>" . $row["vname"] . "</td>";
+                                                        echo "<td>" . $row["whomtovisit"] . "</td>";
 
-                                                    echo "<td>" . $badge . "</td>";
-                                                    echo "</tr>";
+                                                        // Display status badge based on status value
+                                                        echo "<td>";
+                                                        if ($row["status"] == "Y") {
+                                                            echo "<span class='btn btn-outline-danger btn-sm'><i class='bi bi-box-arrow-in-left'></i>&nbsp; Entered</span>";
+                                                        } elseif ($row["status"] == "N") {
+                                                            echo "<span class='btn btn-outline-success btn-sm'><i class='fa-solid fa-right-to-bracket'></i>&nbsp; Exited &nbsp;</span>";
+                                                        } else {
+                                                            echo $row["status"]; // Display status text for other values
+                                                        }
+                                                        echo "</td>";
+
+                                                        // Add print gate pass button
+                                                        echo "<td>";
+                                                        echo "<button type='button' class='btn btn-outline-primary'><i class='bi bi-printer-fill'></i></button>";
+                                                        echo "</td>";
+                                                        echo "</tr>";
+                                                    }
+                                                } else {
+                                                    echo "<tr><td colspan='5'>No visitors found</td></tr>";
                                                 }
+
+                                                // Free result set
+                                                $result->close();
                                             } else {
-                                                echo "<tr><td colspan='6'>No events found</td></tr>";
+                                                echo "Error: " . $conn->error;
                                             }
 
+                                            // Close the database connection
+                                            $conn->close();
                                             ?>
                                         </tbody>
                                     </table>
 
+
                                 </div>
                             </div>
                         </div><!-- End Event-->
-
-
-                        <!-- My Complaints -->
-                        <div class="col-12">
-                            <div class="card recent-sales overflow-auto">
-                                <div class="card-body" style="border-top: 5px solid #AE00FF;">
-                                    <h5 class="card-title">My Complaints Tickets</h5>
-                                    <div class="table-responsive"> <!-- Added to make the table scrollable -->
-                                        <table class="table table-bordered datatable">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Complaint <br> Type</th>
-                                                    <th scope="col">Complaint <br> Description</th>
-                                                    <th scope="col">Email <br> Address</th>
-                                                    <th scope="col">Complaint <br> issue date</th>
-                                                    <th scope="col">Complaint <br> solve date</th>
-                                                    <th scope="col">Complaint <br> Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                // Assuming you have already established a database connection
-
-                                                // Perform SQL query to fetch records from the complaints table
-                                                $sql = "SELECT * FROM complaints";
-                                                $result = mysqli_query($conn, $sql);
-
-                                                // Check if any records were returned
-                                                if (mysqli_num_rows($result) > 0) {
-                                                    // Loop through each row of data
-                                                    while ($row = mysqli_fetch_assoc($result)) {
-                                                        // Output the data in the table format
-                                                        echo "<tr>";
-                                                        echo "<td>" . $row['cid'] . "</td>";
-                                                        echo "<td>" . $row['complaint_type'] . "</td>";
-                                                        echo "<td>" . $row['complaint_description'] . "</td>";
-
-                                                        // Check if email_id exists in the row
-                                                        if (isset($row['email'])) {
-                                                            echo "<td>" . $row['email'] . "</td>";
-                                                        } else {
-                                                            echo "<td>N/A</td>";
-                                                        }
-
-                                                        // Check if complaint_issue_date exists in the row
-                                                        if (isset($row['complaint_occured_date'])) {
-                                                            echo "<td>" . $row['complaint_occured_date'] . "</td>";
-                                                        } else {
-                                                            echo "<td>N/A</td>";
-                                                        }
-
-                                                        // Check if complaint_resolve_date exists in the row
-                                                        if (isset($row['complaint_resolved_date'])) {
-                                                            echo "<td>" . $row['complaint_resolved_date'] . "</td>";
-                                                        } else {
-                                                            echo "<td>N/A</td>";
-                                                        }
-
-                                                        $badge = '';
-                                                        switch ($row['complaint_status']) {
-                                                            case 'P':
-                                                                $badge = '<span class="badge bg-warning">Pending</span>';
-                                                                break;
-                                                            case 'y':
-                                                                $badge = '<span class="badge bg-success">Booked</span>';
-                                                                break;
-                                                            case 'n':
-                                                                $badge = '<span class="badge bg-danger">Rejected</span>';
-                                                                break;
-                                                            default:
-                                                                $badge = '<span class="badge bg-secondary">Unknown</span>';
-                                                        }
-
-                                                        echo "<td>" . $badge . "</td>";
-                                                        echo "</tr>";
-                                                    }
-                                                } else {
-                                                    // If no records found, display a message
-                                                    echo "<tr><td colspan='7'>No complaints found.</td></tr>";
-                                                }
-                                                ?>
-
-                                            </tbody>
-                                        </table>
-                                    </div> <!-- End table-responsive -->
-                                </div>
-                            </div>
-                        </div><!-- End complaints-->
-
 
                     </div>
                 </div><!-- End Left side columns -->

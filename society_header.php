@@ -1,9 +1,12 @@
 <?php
+
+
 $selectedSociety = ''; // Initialize $selectedSociety to avoid the warning
 if (isset($_GET['society'])) {
     $selectedSociety = $_GET['society'];
-    // Now you can use $selectedSociety in your PHP code
+    $_SESSION["selectedSociety"] = $selectedSociety; // Store the selected society in session
 }
+//echo $_SESSION["selectedSociety"];
 ?>
 
 <?php
@@ -22,8 +25,6 @@ if (mysqli_num_rows($result) > 0) {
     $logo_url = isset($_SESSION["logoPath"]) ? $_SESSION["logoPath"] : "./img/default_logo.png"; // Change this to your default 
 }
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="en">

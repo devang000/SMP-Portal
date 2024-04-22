@@ -4,15 +4,15 @@
     include "society_header.php";
     include "conn.php";
 
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
 
 
-        require './PHPMailer-master/src/Exception.php';
-        require_once("./PHPMailer-master/src/PHPMailer.php");
-        require_once("./PHPMailer-master/src/SMTP.php");
-        include "./society_header.php";
-        include "conn.php";
+    require './PHPMailer-master/src/Exception.php';
+    require_once("./PHPMailer-master/src/PHPMailer.php");
+    require_once("./PHPMailer-master/src/SMTP.php");
+    include "./society_header.php";
+    include "conn.php";
     // Fetch society names and output them as <option> elements
     $sql = "SELECT society_Name FROM society";
     $result = $conn->query($sql);
@@ -20,67 +20,83 @@
 
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (isset($_POST["password"])) {
-            // Login functionality
+        // Check if email and password are set in the POST request
+        if (isset($_POST["email"]) && isset($_POST["password"])) {
+            // Assign email and password values
             $email = trim($_POST["email"]);
             $password = trim($_POST["password"]);
-            // Assuming you have a name column
-            // Define the SQL query
+
+            // Define the SQL query to fetch resident details
             $sql = "SELECT id, photo, firstname, society, lastname, phone_number, dob, flatNo, address, city,password FROM residents WHERE email = ?";
 
             // Prepare the statement
             if ($stmt = mysqli_prepare($conn, $sql)) {
+                // Bind parameters and execute the statement
                 mysqli_stmt_bind_param($stmt, "s", $email);
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
 
+                // Check if any row is returned
                 if ($row = mysqli_fetch_assoc($result)) {
-                    // Compare the entered password with the stored password
+                    // Check if the entered password matches the stored password
                     if ($password === $row['password']) {
-                        // Password is correct, set session variables and redirect to dashboard
-                        $_SESSION["user_id"] = $row["id"];
-                        $_SESSION["user_email"] = $email;
-                        $_SESSION["user_profile_picture"] = $row["photo"]; // Assuming you have a profile_picture column
-                        $_SESSION["user_name"] = $row["firstname"];
-                        $_SESSION["society_name"] = $row["society"];
-                        $_SESSION["lastname"] = $row["lastname"];
-                        $_SESSION["phone"] = $row["phone_number"];
-                        $_SESSION["dob"] = $row["dob"];
-                        $_SESSION["flatNo"] = $row["flatNo"];
-                        $_SESSION["address"] = $row["address"];
-                        $_SESSION["city"] = $row["city"];
+                        // Check if the society name matches the selected society in the session
+                        if ($row['society'] === $_SESSION['selectedSociety']) {
+                            // Set session variables
+                            $_SESSION["user_id"] = $row["id"];
+                            $_SESSION["user_email"] = $email;
+                            $_SESSION["user_profile_picture"] = $row["photo"];
+                            $_SESSION["user_name"] = $row["firstname"];
+                            $_SESSION["society_name"] = $row["society"];
+                            $_SESSION["lastname"] = $row["lastname"];
+                            $_SESSION["phone"] = $row["phone_number"];
+                            $_SESSION["dob"] = $row["dob"];
+                            $_SESSION["flatNo"] = $row["flatNo"];
+                            $_SESSION["address"] = $row["address"];
+                            $_SESSION["city"] = $row["city"];
 
-                        echo '<script>
-                                console.log("Password is correct. Redirecting...");
-                                window.location = "./Resident_dashboard.php";
-                                </script>';
+                            // Redirect to resident_dashboard page
+                            echo '<script>window.location.href = "./Resident_dashboard.php"</script>';
+                            //header("Location: ./Resident_dashboard.php");
+                            exit();
+                        } else {
+                            // Society name does not match the selected society
+                            echo '<script>
+                                $(document).ready(function(){
+                                    swal({
+                                        icon: "error",
+                                        title: "Invalid Society",
+                                        dangerMode: true,
+                                        text: "You are not a resident of this society. Please login with correct credentials.",
+                                    });
+                                });
+                              </script>';
+                        }
                     } else {
                         // Invalid email or password
                         echo '<script>
-                                        $(document).ready(function(){
-                                            swal({
-                                                icon: "error",
-                                                title: "Invalid Credentials",
-                                                dangerMode: true,
-                                                text: "Email id or password is incorrect\nPlease enter a valid email and password!",
-                                            });
-                                        });
-                                    </script>
-                                ';
+                            $(document).ready(function(){
+                                swal({
+                                    icon: "error",
+                                    title: "Invalid Credentials",
+                                    dangerMode: true,
+                                    text: "Email or password is incorrect. Please enter valid credentials.",
+                                });
+                            });
+                          </script>';
                     }
                 } else {
-                    // Email not found
+                    // Email not found in the database
                     echo '<script>
-                                    $(document).ready(function(){
-                                        swal({
-                                            icon: "error",
-                                            title: "Email Not Found",
-                                            dangerMode: true,
-                                            text: "The entered email does not exist in our records.",
-                                        });
-                                    });
-                                </script>
-                            ';
+                        $(document).ready(function(){
+                            swal({
+                                icon: "error",
+                                title: "Email Not Found",
+                                dangerMode: true,
+                                text: "The entered email does not exist in our records. Please check your email and try again.",
+                            });
+                        });
+                      </script>';
                 }
             }
         } elseif (isset($_POST["forgetEmail"])) {
@@ -368,13 +384,50 @@
                      <button class="btn btn-danger btn-block btn-lg" data-target="#exampleModal" data-toggle="modal"><i class="fa-solid fa-users"></i>&nbsp; Resident/User</button>
                  </div>
                  <div class="col-md-4">
-                     <button class="btn btn-info btn-block btn-lg"><i class="fa-solid fa-person-military-pointing"></i>&nbsp; Gate Keeper</button>
+                     <button class="btn btn-info btn-block btn-lg" data-toggle="modal" data-target="#gateKeeperModal"><i class="fa-solid fa-person-military-pointing"></i>&nbsp; Gate Keeper</button>
                  </div>
              </div>
          </div>
 
 
      </section>
+
+     <!-- Modal HTML for Gate Keeper -->
+     <div class="modal fade" id="gateKeeperModal" tabindex="-1" role="dialog" aria-labelledby="gateKeeperModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+             <div class="modal-content">
+                 <div class="modal-header bg-info ">
+                     <h5 class="modal-title text-white" id="gateKeeperModalLabel">Gate Keeper Login</h5>
+                     <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <!-- <form id="forgetPasswordForm" method="POST" action="" onsubmit="return sendForgetPasswordEmail()"> -->
+
+                         <div class="form-group">
+                             <label for="gid"><b>Guard ID:</b></label>
+                             <div class="input-group">
+                                 <div class="input-group-prepend">
+                                     <span class="input-group-text">
+                                         <i class="fa-solid fa-person-military-pointing"></i>
+                                     </span>
+                                 </div>
+                                 <input type="text" name="gid" class="form-control" id="gid" placeholder="Enter gatekeeper id">
+                             </div>
+                             <span class="text-danger" id="forgetEmailError"></span>
+                         </div>
+
+                         <!-- Changed type to submit -->
+                     <!-- </form> -->
+                 </div>
+                 <div class="modal-footer bg-light">
+                     <button type="button" class="btn btn-secondary bg-light text-dark border-0 rounded-0" data-dismiss="modal">Close</button>
+                     <button type="submit" class="btn btn-info btn-block m-0 rounded-0" onclick="window.location.href='./gateKeeperDashboard.php'">Login</button>
+                 </div>
+             </div>
+         </div>
+     </div>
 
 
      <!-- Resident Login Modal -->

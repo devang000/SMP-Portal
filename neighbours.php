@@ -303,23 +303,23 @@ include './conn.php';
 
 
                             <!-- Table with stripped rows -->
-                            <div style="    overflow-y: auto;">
-                                <table class="table datatable table-bordered table-striped">
+                            <div style="overflow-y: auto;">
+                                <table class="table datatable table-bordered table-striped" id="mytbl">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
                                             <th>Photo</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
+                                            <!-- <th>Name</th> -->
+                                            <th colspan="2" style="padding-left: 150px;">Personal Details</th>
+                                            <!-- <th>Phone</th>
                                             <th>DOB</th>
                                             <th>City</th>
                                             <th>Flat No</th>
                                             <th>Address</th>
-                                            <th>Pincode</th>
-                                            <th>Twitter</th>
+                                            <th>Pincode</th> -->
+                                            <!-- <th>Twitter</th>
                                             <th>Facebook</th>
-                                            <th>Instagram</th>
+                                            <th>Instagram</th> -->
 
                                         </tr>
                                     </thead>
@@ -327,27 +327,49 @@ include './conn.php';
                                         <?php
                                         // Include your database connection file
                                         require_once 'conn.php';
+                                        $societyname = $_SESSION["selectedSociety"];
 
                                         // Fetch residents' information from the database
-                                        $sql = "SELECT * FROM residents";
+                                        $sql = "SELECT * FROM residents WHERE society = '$societyname'"; // Enclose $societyname in single quotes
                                         $result = $conn->query($sql);
 
                                         if ($result->num_rows > 0) {
                                             while ($row = $result->fetch_assoc()) {
                                                 echo "<tr>";
                                                 echo "<td>" . $row['id'] . "</td>";
-                                                echo "<td><img src='" . $row['photo'] . "' height='auto' width='100px' alt=''></td>";
-                                                echo "<td>" . $row['firstname'] . " " . $row['lastname'] . "</td>";
-                                                echo "<td>" . $row['email'] . "</td>";
-                                                echo "<td>" . $row['phone_number'] . "</td>";
-                                                echo "<td>" . $row['dob'] . "</td>";
-                                                echo "<td>" . $row['city'] . "</td>";
-                                                echo "<td>" . $row['flatNo'] . "</td>";
-                                                echo "<td>" . $row['address'] . "</td>";
-                                                echo "<td>" . $row['pincode'] . "</td>";
-                                                echo "<td><a href='" . $row['twitter'] . "' target='_blank'>" . $row['twitter'] . "</a></td>";
-                                                echo "<td><a href='" . $row['facebook'] . "' target='_blank'>" . $row['facebook'] . "</a></td>";
-                                                echo "<td><a href='" . $row['instagram'] . "' target='_blank'>" . $row['instagram'] . "</a></td>";
+                                                echo "<td style='text-align: center;'>
+                                                        <img src='" . $row['photo'] . "' height='auto' width='100px' alt='' class='rounded-circle shadow'><br><br>" .
+                                                         $row['firstname'] . " " . $row['lastname'] . "<br><br>" . // Concatenate the name
+                                                        "<a href='" . $row['twitter'] . "' target='_blank'><i class='bi bi-facebook h5 '></i></a>
+                                                        <span style='margin: 0 5px;'> </span> <!-- Add space between icons -->
+                                                        <a href='" . $row['facebook'] . "' target='_blank'><i class='bi bi-twitter h5 '></i></a>
+                                                        <span style='margin: 0 5px;'> </span> <!-- Add space between icons -->
+                                                        <a href='" . $row['instagram'] . "' target='_blank'><i class='bi bi-instagram h5 '></i></a>
+                                                    </td>";
+
+                                                echo "<td style=width:200px; class='text-right'>";
+                                                echo "<p><strong>Email:</strong></p>";  
+                                                echo "<p><strong>Phone Number:</strong></p>";
+                                                echo "<p><strong>Date of Birth:</strong></p>";
+                                                echo "<p><strong>City:</strong></p>";
+                                                echo "<p><strong>Flat No:</strong></p>";
+                                                echo "<p><strong>Address:</strong></p><br>";
+                                                echo "<p><strong>Pincode:</strong></p>";
+                                                echo "</td>";
+
+                                                echo "<td>";
+                                                echo "<p>" . $row['email'] . "</p>";
+                                                echo "<p>" . $row['phone_number'] . "</p>";
+                                                echo "<p>" . $row['dob'] . "</p>";
+                                                echo "<p>" . $row['city'] . "</p>";
+                                                echo "<p>" . $row['flatNo'] . "</p>";
+                                                echo "<textarea rows=2 cols=50  disabled>" . $row['address'] . "</textarea><br>";
+                                                echo "<p class='mt-1'>" . $row['pincode'] . "</p>";
+                                                echo "</td>";
+
+
+
+
 
                                                 // Assuming 'photo' column contains the path to the image file
 

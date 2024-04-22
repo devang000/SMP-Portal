@@ -94,156 +94,143 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <header>Resident Registration</header>
         <br>
         <form id="registrationForm" action="./Resident_register.php" method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
-            
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="firstName">First Name<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name">
-                            <span id="firstNameError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="lastName">Last Name<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" name="lastName">
-                            <span id="lastNameError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="email">Email<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
-                            <span id="emailError" class="text-danger"></span>
-                        </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="firstName">First Name<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="text" class="form-control" name="firstName" id="firstName" placeholder="Enter your first name">
+                        <span id="firstNameError" class="text-danger"></span>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="phoneNumber">Phone Number<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number" name="phoneNumber">
-                            <span id="phoneError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="dob">Date of Birth<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="date" class="form-control" id="dob" name="dob" placeholder="Enter your date of birth">
-                            <span id="dobError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="city">City<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input class="form-control" id="city" name="city" placeholder="Enter your city">
-                            <span id="cityError" class="text-danger"></span>
-                        </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lastName">Last Name<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Enter your last name" name="lastName">
+                        <span id="lastNameError" class="text-danger"></span>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="selectSociety">Select Your Society<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <select class="form-control" id="selectSociety" name="selectSociety">
-                                <option disabled selected>Select your society</option>
-                                <option value="add">Add your society if not listed</option>
-                                <?php
-                                // Fetch all societies from the database
-                                $sql = "SELECT society_name FROM society";
-                                $result = $conn->query($sql);
-                                // Output each society as an option
-                                if ($result->num_rows > 0) {
-                                    while ($row = $result->fetch_assoc()) {
-                                        echo '<option value="' . $row['society_name'] . '">' . $row['society_name'] . '</option>';
-                                    }
-                                }
-                                ?>
-                            </select>
-                            <br>
-                            <div class="form-group" id="addSocietyInput" style="display: none;">
-                                <input type="text" class="form-control" id="newSociety" name="newSociety" placeholder="Enter new society name" style="width: 265px;">
-                                <span id="newSocietyError" class="text-danger"></span>
-                            </div>
-                            <span id="selectSocietyError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="flatNo">Flat No: / House Name:</label>
-                            <input type="text" class="form-control" id="flatNo" name="flatNo" placeholder="Enter your flat/house name or no." style="margin-top: 8px;">
-                            <span id="flatNoError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="address">Address<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <textarea rows="4" class="form-control" id="address" name="address" style="margin-top: 8px;" placeholder="Enter your address"></textarea>
-                            <span id="addressError" class="text-danger"></span>
-                        </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="email">Email<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                        <span id="emailError" class="text-danger"></span>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="pincode">Pin Code<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Enter Pincode">
-                            <span id="pincodeError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="password">Password<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
-                            <span id="passwordError" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password<sup style="color: red; font-weight:bolder;">*</sup></label>
-                            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
-                            <span id="confirmPasswordError" class="text-danger"></span>
-                        </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="phoneNumber">Phone Number<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="tel" class="form-control" id="phoneNumber" placeholder="Enter your phone number" name="phoneNumber">
+                        <span id="phoneError" class="text-danger"></span>
                     </div>
                 </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="profilePicture">Profile Picture</label>
-                            <input type="file" class="form-control-file" name="profilePicture" id="profilePicture" accept="image/*">
-                            <span id="photoError" class="text-danger"></span>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="date" class="form-control" id="dob" name="dob" placeholder="Enter your date of birth">
+                        <span id="dobError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="city">City<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input class="form-control" id="city" name="city" placeholder="Enter your city">
+                        <span id="cityError" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="selectSociety">Select Your Society<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="text" class="form-control" id="selectSociety" name="selectSociety" value="<?php echo isset($_SESSION["selectedSociety"]) ? $_SESSION["selectedSociety"] : ''; ?>" readonly>
+
+                        <br>
+                        <div class="form-group" id="addSocietyInput" style="display: none;">
+                            <input type="text" class="form-control" id="newSociety" name="newSociety" placeholder="Enter new society name" style="width: 265px;">
+                            <span id="newSocietyError" class="text-danger"></span>
                         </div>
-                    </div>
-                    <div class="col-md-6">
-                        <!-- Image preview -->
-                        <img id="imagePreview" src="#" alt="Preview" style="max-width: 200px; max-height: 150px; display: none; float: right;">
-                    </div>
-                    <script>
-                        document.getElementById('profilePicture').addEventListener('change', function(e) {
-                            var imagePreview = document.getElementById('imagePreview');
-                            imagePreview.style.display = 'block';
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                imagePreview.src = e.target.result;
-                            }
-                            reader.readAsDataURL(e.target.files[0]);
-                        });
-                    </script>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-md-12">
-                        <button type="submit" class="btn btn-primary" id="registerBtn" style="display: flex; float:left">
-                            <i class="fa fa-check"></i> &nbsp;Register
-                        </button>
-                        <a href="./index.php" style="display:flex; float: right; margin-top: 35px"><b>Already have an account?</b></a>
+                        <span id="selectSocietyError" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="flatNo">Flat No: / House Name:</label>
+                        <input type="text" class="form-control" id="flatNo" name="flatNo" placeholder="Enter your flat/house name or no." style="margin-top: 8px;">
+                        <span id="flatNoError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="address">Address<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <textarea rows="4" class="form-control" id="address" name="address" style="margin-top: 8px;" placeholder="Enter your address"></textarea>
+                        <span id="addressError" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="pincode">Pin Code<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="number" class="form-control" id="pincode" name="pincode" placeholder="Enter Pincode">
+                        <span id="pincodeError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="password">Password<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                        <span id="passwordError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password<sup style="color: red; font-weight:bolder;">*</sup></label>
+                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm your password">
+                        <span id="confirmPasswordError" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="profilePicture">Profile Picture</label>
+                        <input type="file" class="form-control-file" name="profilePicture" id="profilePicture" accept="image/*">
+                        <span id="photoError" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- Image preview -->
+                    <img id="imagePreview" src="#" alt="Preview" style="max-width: 200px; max-height: 150px; display: none; float: right;">
+                </div>
+                <script>
+                    document.getElementById('profilePicture').addEventListener('change', function(e) {
+                        var imagePreview = document.getElementById('imagePreview');
+                        imagePreview.style.display = 'block';
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.src = e.target.result;
+                        }
+                        reader.readAsDataURL(e.target.files[0]);
+                    });
+                </script>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-primary" id="registerBtn" style="display: flex; float:left">
+                        <i class="fa fa-check"></i> &nbsp;Register
+                    </button>
+                    <a href="./index.php" style="display:flex; float: right; margin-top: 35px"><b>Already have an account?</b></a>
+                </div>
+            </div>
+        </form>
     </div>
 
     <script src="./JS/Resident/Resident_register.js"></script>
